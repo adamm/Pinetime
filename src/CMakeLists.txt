@@ -441,6 +441,7 @@ list(APPEND SOURCE_FILES
         displayapp/screens/ApplicationList.cpp
         displayapp/screens/Notifications.cpp
         displayapp/screens/Twos.cpp
+        displayapp/screens/StepCount.cpp
         displayapp/screens/HeartRate.cpp
         main.cpp
         drivers/St7789.cpp
@@ -468,6 +469,7 @@ list(APPEND SOURCE_FILES
         components/ble/BatteryInformationService.cpp
         components/ble/ImmediateAlertService.cpp
         components/ble/ServiceDiscovery.cpp
+        components/ble/StepCountService.cpp
         components/ble/HeartRateService.cpp
         components/firmwarevalidator/FirmwareValidator.cpp
         components/motor/MotorController.cpp
@@ -482,6 +484,9 @@ list(APPEND SOURCE_FILES
 
         systemtask/SystemTask.cpp
         drivers/TwiMaster.cpp
+
+        stepcounttask/StepCountTask.cpp
+        components/stepcount/StepCountController.cpp
 
         heartratetask/HeartRateTask.cpp
         components/heartrate/Ppg.cpp
@@ -534,6 +539,7 @@ set(INCLUDE_FILES
         displayapp/screens/ApplicationList.h
         displayapp/Apps.h
         displayapp/screens/Notifications.h
+        displayapp/screens/StepCount.h
         displayapp/screens/HeartRate.h
         drivers/St7789.h
         drivers/SpiNorFlash.h
@@ -558,6 +564,7 @@ set(INCLUDE_FILES
         components/ble/ImmediateAlertService.h
         components/ble/ServiceDiscovery.h
         components/ble/BleClient.h
+        components/ble/StepCountService.h.h
         components/ble/HeartRateService.h.h
         drivers/Cst816s.h
         FreeRTOS/portmacro.h
@@ -575,6 +582,8 @@ set(INCLUDE_FILES
         systemtask/SystemMonitor.h
         displayapp/screens/Symbols.h
         drivers/TwiMaster.h
+        stepcounttask/StepCountTask.h
+        components/stepcount/StepCountController.h
         heartratetask/HeartRateTask.h
         components/heartrate/Ppg.h
         components/heartrate/Biquad.h

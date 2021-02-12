@@ -10,6 +10,7 @@
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
 #include "components/ble/NotificationManager.h"
+#include "components/stepcount/StepCountController.h"
 #include "components/heartrate/HeartRateController.h"
 #include "../DisplayApp.h"
 
@@ -28,9 +29,11 @@ Clock::Clock(DisplayApp* app,
         Controllers::Battery& batteryController,
         Controllers::Ble& bleController,
         Controllers::NotificationManager& notificatioManager,
+        Controllers::StepCountController& stepCountController,
         Controllers::HeartRateController& heartRateController): Screen(app), currentDateTime{{}},
                                            dateTimeController{dateTimeController}, batteryController{batteryController},
                                            bleController{bleController}, notificatioManager{notificatioManager},
+                                           stepCountController{stepCountController},
                                            heartRateController{heartRateController} {
   displayedChar[0] = 0;
   displayedChar[1] = 0;
@@ -189,7 +192,7 @@ bool Clock::Refresh() {
     lv_obj_align(heartbeatBpm, heartbeatValue, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
   }
 
-  // TODO stepCount = stepController.GetValue();
+  stepCount = stepCountController.StepCount();
   if(stepCount.IsUpdated()) {
     char stepBuffer[5];
     sprintf(stepBuffer, "%lu", stepCount.Get());

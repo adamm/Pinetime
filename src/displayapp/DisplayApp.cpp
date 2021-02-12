@@ -1,5 +1,6 @@
 #include "DisplayApp.h"
 #include <libraries/log/nrf_log.h>
+#include <displayapp/screens/StepCount.h>
 #include <displayapp/screens/HeartRate.h>
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
@@ -32,6 +33,7 @@ DisplayApp::DisplayApp(Drivers::St7789 &lcd, Components::LittleVgl &lvgl, Driver
                        Controllers::DateTime &dateTimeController, Drivers::WatchdogView &watchdog,
                        System::SystemTask &systemTask,
                        Pinetime::Controllers::NotificationManager& notificationManager,
+                       Pinetime::Controllers::StepCountController& stepCountController,
                        Pinetime::Controllers::HeartRateController& heartRateController) :
         lcd{lcd},
         lvgl{lvgl},
@@ -40,9 +42,10 @@ DisplayApp::DisplayApp(Drivers::St7789 &lcd, Components::LittleVgl &lvgl, Driver
         dateTimeController{dateTimeController},
         watchdog{watchdog},
         touchPanel{touchPanel},
-        currentScreen{new Screens::Clock(this, dateTimeController, batteryController, bleController, notificationManager, heartRateController) },
+        currentScreen{new Screens::Clock(this, dateTimeController, batteryController, bleController, notificationManager, stepCountController, heartRateController) },
         systemTask{systemTask},
         notificationManager{notificationManager},
+        stepCountController{stepCountController},
         heartRateController{heartRateController} {
   msgQueue = xQueueCreate(queueSize, itemSize);
   onClockApp = true;
@@ -197,7 +200,7 @@ void DisplayApp::RunningState() {
       case Apps::None:
       case Apps::Launcher: currentScreen.reset(new Screens::ApplicationList(this)); break;
       case Apps::Clock:
-        currentScreen.reset(new Screens::Clock(this, dateTimeController, batteryController, bleController, notificationManager, heartRateController));
+        currentScreen.reset(new Screens::Clock(this, dateTimeController, batteryController, bleController, notificationManager, stepCountController, heartRateController));
         onClockApp = true;
         break;
 //      case Apps::Test: currentScreen.reset(new Screens::Message(this)); break;
@@ -212,6 +215,7 @@ void DisplayApp::RunningState() {
       case Apps::Navigation : currentScreen.reset(new Screens::Navigation(this, systemTask.nimble().navigation())); break;
       case Apps::FirmwareValidation: currentScreen.reset(new Screens::FirmwareValidation(this, validator)); break;
       case Apps::Notifications: currentScreen.reset(new Screens::Notifications(this, notificationManager, systemTask.nimble().alertService(), Screens::Notifications::Modes::Normal)); break;
+      case Apps::StepCount: currentScreen.reset(new Screens::StepCount(this, stepCountController)); break;
       case Apps::HeartRate: currentScreen.reset(new Screens::HeartRate(this, heartRateController)); break;
     }
     nextApp = Apps::None;

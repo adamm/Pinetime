@@ -18,6 +18,7 @@
 #include "MusicService.h"
 #include "NavigationService.h"
 #include "ServiceDiscovery.h"
+#include "StepCountService.h"
 #include "HeartRateService.h"
 
 namespace Pinetime {
@@ -40,6 +41,7 @@ namespace Pinetime {
         NimbleController(Pinetime::System::SystemTask& systemTask, Pinetime::Controllers::Ble& bleController,
                 DateTime& dateTimeController, Pinetime::Controllers::NotificationManager& notificationManager,
                 Controllers::Battery& batteryController, Pinetime::Drivers::SpiNorFlash& spiNorFlash,
+                Controllers::StepCountController& stepCountController,
                 Controllers::HeartRateController& heartRateController);
         void Init();
         void StartAdvertising();
@@ -80,6 +82,7 @@ namespace Pinetime {
         NavigationService navService;
         BatteryInformationService batteryInformationService;
         ImmediateAlertService immediateAlertService;
+        StepCountService stepCountService;
         HeartRateService heartRateService;
 
         uint8_t addrType; // 1 = Random, 0 = PUBLIC

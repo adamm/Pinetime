@@ -21,6 +21,7 @@
 #include "drivers/SpiMaster.h"
 #include "drivers/SpiNorFlash.h"
 #include "drivers/TwiMaster.h"
+#include "drivers/Bma421.h"
 #include "drivers/Hrs3300.h"
 #include "main.h"
 
@@ -41,12 +42,14 @@ SystemTask::SystemTask(Drivers::SpiMaster &spi, Drivers::St7789 &lcd,
                        Controllers::Battery &batteryController, Controllers::Ble &bleController,
                        Controllers::DateTime &dateTimeController,
                        Pinetime::Controllers::MotorController& motorController,
+                       Pinetime::Drivers::Bma421& stepCountSensor,
                        Pinetime::Drivers::Hrs3300& heartRateSensor) :
                        spi{spi}, lcd{lcd}, spiNorFlash{spiNorFlash},
                        twiMaster{twiMaster}, touchPanel{touchPanel}, lvgl{lvgl}, batteryController{batteryController},
                        heartRateController{*this},
                        bleController{bleController}, dateTimeController{dateTimeController},
                        watchdog{}, watchdogView{watchdog},
+                       stepCountSensor{stepCountSensor},
                        motorController{motorController}, heartRateSensor{heartRateSensor},
                        nimbleController(*this, bleController,dateTimeController, notificationManager, batteryController, spiNorFlash, heartRateController) {
   systemTasksMsgQueue = xQueueCreate(10, 1);
@@ -84,11 +87,18 @@ void SystemTask::Work() {
 
   displayApp.reset(new Pinetime::Applications::DisplayApp(lcd, lvgl, touchPanel, batteryController, bleController,
                                                           dateTimeController, watchdogView, *this, notificationManager,
-                                                          heartRateController));
+                                                          stepCountController, heartRateController));
   displayApp->Start();
 
   batteryController.Update();
   displayApp->PushMessage(Pinetime::Applications::DisplayApp::Messages::UpdateBatteryLevel);
+
+
+  stepCountSensor.Init();
+  stepCountSensor.Disable();
+  stepCountApp.reset(new Pinetime::Applications::StepCountTask(stepCountSensor, stepCountController));
+  stepCountApp->Start();
+
 
   heartRateSensor.Init();
   heartRateSensor.Disable();
@@ -144,6 +154,7 @@ void SystemTask::Work() {
           displayApp->PushMessage(Applications::DisplayApp::Messages::GoToRunning);
           displayApp->PushMessage(Applications::DisplayApp::Messages::UpdateBatteryLevel);
           heartRateApp->PushMessage(Pinetime::Applications::HeartRateTask::Messages::WakeUp);
+          stepCountApp->PushMessage(Pinetime::Applications::StepCountTask::Messages::WakeUp);
 
           isSleeping = false;
           isWakingUp = false;
@@ -154,6 +165,7 @@ void SystemTask::Work() {
           xTimerStop(idleTimer, 0);
           displayApp->PushMessage(Pinetime::Applications::DisplayApp::Messages::GoToSleep);
           heartRateApp->PushMessage(Pinetime::Applications::HeartRateTask::Messages::GoToSleep);
+          stepCountApp->PushMessage(Pinetime::Applications::StepCountTask::Messages::GoToSleep);
           break;
         case Messages::OnNewTime:
           ReloadIdleTimer();

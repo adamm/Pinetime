@@ -12,6 +12,7 @@ namespace Pinetime {
     class Battery;
     class Ble;
     class NotificationManager;
+    class StepCountController;
     class HeartRateController;
   }
 
@@ -44,6 +45,7 @@ namespace Pinetime {
                   Controllers::Battery& batteryController,
                   Controllers::Ble& bleController,
                   Controllers::NotificationManager& notificatioManager,
+                  Controllers::StepCountController& stepCountController,
                   Controllers::HeartRateController& heartRateController);
           ~Clock() override;
 
@@ -89,6 +91,7 @@ namespace Pinetime {
           Controllers::Battery& batteryController;
           Controllers::Ble& bleController;
           Controllers::NotificationManager& notificatioManager;
+          Controllers::StepCountController& stepCountController;
           Controllers::HeartRateController& heartRateController;
 
           bool running = true;
