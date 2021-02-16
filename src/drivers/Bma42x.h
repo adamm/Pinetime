@@ -4,7 +4,7 @@
 
 namespace Pinetime {
   namespace Drivers {
-    class Bma421 {
+    class Bma42x {
     public:
       enum class Registers : uint8_t {
         Id = 0x00,
@@ -21,11 +21,11 @@ namespace Pinetime {
         Hgain = 0x17
       };
 
-      Bma421(TwiMaster& twiMaster, uint8_t twiAddress);
-      Bma421(const Bma421&) = delete;
-      Bma421& operator=(const Bma421&) = delete;
-      Bma421(Bma421&&) = delete;
-      Bma421& operator=(Bma421&&) = delete;
+      Bma42x(TwiMaster& twiMaster, uint8_t twiAddress);
+      Bma42x(const Bma42x&) = delete;
+      Bma42x& operator=(const Bma42x&) = delete;
+      Bma42x(Bma42x&&) = delete;
+      Bma42x& operator=(Bma42x&&) = delete;
 
       void Init();
       void Enable();

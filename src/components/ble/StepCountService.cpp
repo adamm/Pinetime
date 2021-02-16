@@ -57,10 +57,9 @@ void StepCountService::Init() {
 int StepCountService::OnStepCountRequested(uint16_t connectionHandle, uint16_t attributeHandle,
                                            ble_gatt_access_ctxt *context) {
   if(attributeHandle == stepCountMeasurementHandle) {
-    NRF_LOG_INFO("BATTERY : handle = %d", stepCountMeasurementHandle);
-    static uint8_t batteryValue = stepCountController.StepCount();
+    NRF_LOG_INFO("STEPCOUNT : handle = %d", stepCountMeasurementHandle);
 
-    uint8_t buffer[2] = {0, stepCountController.StepCount()}; // [0] = flags, [1] = hr value
+    uint8_t buffer[2] = {0, stepCountController.StepCount()}; // [0] = flags, [1] = step value
 
     int res = os_mbuf_append(context->om, buffer, 2);
     return (res == 0) ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;

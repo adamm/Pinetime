@@ -1,11 +1,11 @@
 #include "StepCountTask.h"
-#include <drivers/Bma421.h>
+#include <drivers/Bma42x.h>
 #include <components/stepcount/StepCountController.h>
 #include <nrf_log.h>
 
 using namespace Pinetime::Applications;
 
-StepCountTask::StepCountTask(Drivers::Bma421 &stepCountSensor, Controllers::StepCountController& controller) :
+StepCountTask::StepCountTask(Drivers::Bma42x &stepCountSensor, Controllers::StepCountController& controller) :
       stepCountSensor{stepCountSensor},
       controller{controller} {
   messageQueue = xQueueCreate(10, 1);

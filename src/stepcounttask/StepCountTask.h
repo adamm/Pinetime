@@ -6,7 +6,7 @@
 
 namespace Pinetime {
   namespace Drivers {
-    class Bma421;
+    class Bma42x;
   }
   namespace Controllers{
     class StepCountController;
@@ -17,7 +17,7 @@ namespace Pinetime {
       enum class Messages : uint8_t {GoToSleep, WakeUp, StartMeasurement, StopMeasurement };
       enum class States {Idle, Running};
 
-      explicit StepCountTask(Drivers::Bma421& stepCountSensor, Controllers::StepCountController& controller);
+      explicit StepCountTask(Drivers::Bma42x& stepCountSensor, Controllers::StepCountController& controller);
       void Start();
       void Work();
       void PushMessage(Messages msg);
@@ -30,7 +30,7 @@ namespace Pinetime {
       TaskHandle_t taskHandle;
       QueueHandle_t messageQueue;
       States state = States::Running;
-      Drivers::Bma421 &stepCountSensor;
+      Drivers::Bma42x &stepCountSensor;
       Controllers::StepCountController& controller;
       bool measurementStarted = false;
 

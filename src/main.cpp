@@ -25,8 +25,8 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <timers.h>
+#include <drivers/Bma42x.h>
 #include <drivers/Hrs3300.h>
-#include <drivers/Bma421.h>
 
 #include "components/battery/BatteryController.h"
 #include "components/ble/BleController.h"
@@ -60,8 +60,8 @@ static constexpr uint8_t pinLcdDataCommand = 18;
 static constexpr uint8_t pinTwiScl = 7;
 static constexpr uint8_t pinTwiSda = 6;
 static constexpr uint8_t touchPanelTwiAddress = 0x15;
-static constexpr uint8_t heartRateSensorTwiAddress = 0x44;
 static constexpr uint8_t stepCountSensorTwiAddress = 0x66;
+static constexpr uint8_t heartRateSensorTwiAddress = 0x44;
 
 Pinetime::Drivers::SpiMaster spi{Pinetime::Drivers::SpiMaster::SpiModule::SPI0, {
         Pinetime::Drivers::SpiMaster::BitOrder::Msb_Lsb,
@@ -89,8 +89,8 @@ Pinetime::Drivers::TwiMaster twiMaster{Pinetime::Drivers::TwiMaster::Modules::TW
 Pinetime::Drivers::Cst816S touchPanel {twiMaster, touchPanelTwiAddress};
 Pinetime::Components::LittleVgl lvgl {lcd, touchPanel};
 
+Pinetime::Drivers::Bma42x  stepCountSensor {twiMaster, stepCountSensorTwiAddress};
 Pinetime::Drivers::Hrs3300 heartRateSensor {twiMaster, heartRateSensorTwiAddress};
-Pinetime::Drivers::Bma421  stepCountSensor {twiMaster, stepCountSensorTwiAddress};
 
 
 TimerHandle_t debounceTimer;
@@ -245,7 +245,7 @@ int main(void) {
   debounceTimer = xTimerCreate ("debounceTimer", 200, pdFALSE, (void *) 0, DebounceTimerCallback);
 
   systemTask.reset(new Pinetime::System::SystemTask(spi, lcd, spiNorFlash, twiMaster, touchPanel, lvgl, batteryController, bleController,
-                                                    dateTimeController, motorController, heartRateSensor, stepCountSensor));
+                                                    dateTimeController, motorController, stepCountSensor, heartRateSensor));
   systemTask->Start();
   nimble_port_init();
 

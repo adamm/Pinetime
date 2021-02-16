@@ -21,7 +21,7 @@
 #include "drivers/SpiMaster.h"
 #include "drivers/SpiNorFlash.h"
 #include "drivers/TwiMaster.h"
-#include "drivers/Bma421.h"
+#include "drivers/Bma42x.h"
 #include "drivers/Hrs3300.h"
 #include "main.h"
 
@@ -42,16 +42,18 @@ SystemTask::SystemTask(Drivers::SpiMaster &spi, Drivers::St7789 &lcd,
                        Controllers::Battery &batteryController, Controllers::Ble &bleController,
                        Controllers::DateTime &dateTimeController,
                        Pinetime::Controllers::MotorController& motorController,
-                       Pinetime::Drivers::Bma421& stepCountSensor,
+                       Pinetime::Drivers::Bma42x& stepCountSensor,
                        Pinetime::Drivers::Hrs3300& heartRateSensor) :
                        spi{spi}, lcd{lcd}, spiNorFlash{spiNorFlash},
                        twiMaster{twiMaster}, touchPanel{touchPanel}, lvgl{lvgl}, batteryController{batteryController},
+                       stepCountController{*this},
                        heartRateController{*this},
                        bleController{bleController}, dateTimeController{dateTimeController},
                        watchdog{}, watchdogView{watchdog},
+                       motorController{motorController},
                        stepCountSensor{stepCountSensor},
-                       motorController{motorController}, heartRateSensor{heartRateSensor},
-                       nimbleController(*this, bleController,dateTimeController, notificationManager, batteryController, spiNorFlash, heartRateController) {
+                       heartRateSensor{heartRateSensor},
+                       nimbleController(*this, bleController,dateTimeController, notificationManager, batteryController, spiNorFlash, stepCountController, heartRateController) {
   systemTasksMsgQueue = xQueueCreate(10, 1);
 }
 

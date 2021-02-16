@@ -5,10 +5,10 @@
 #include <FreeRTOS.h>
 #include <task.h>
 #include <timers.h>
-#include <heartratetask/HeartRateTask.h>
-#include <components/heartrate/HeartRateController.h>
 #include <stepcounttask/StepCountTask.h>
 #include <components/stepcount/StepCountController.h>
+#include <heartratetask/HeartRateTask.h>
+#include <components/heartrate/HeartRateController.h>
 
 #include "SystemMonitor.h"
 #include "components/battery/BatteryController.h"
@@ -26,7 +26,7 @@ namespace Pinetime {
     class St7789;
     class TwiMaster;
     class Hrs3300;
-    class Bma421;
+    class Bma42x;
   }
   namespace System {
     class SystemTask {
@@ -42,7 +42,7 @@ namespace Pinetime {
                    Controllers::Battery &batteryController, Controllers::Ble &bleController,
                    Controllers::DateTime &dateTimeController,
                    Pinetime::Controllers::MotorController& motorController,
-                   Pinetime::Drivers::Bma421& stepCountSensor,
+                   Pinetime::Drivers::Bma42x& stepCountSensor,
                    Pinetime::Drivers::Hrs3300& heartRateSensor);
 
 
@@ -67,10 +67,10 @@ namespace Pinetime {
         Pinetime::Components::LittleVgl& lvgl;
         Pinetime::Controllers::Battery& batteryController;
         std::unique_ptr<Pinetime::Applications::DisplayApp> displayApp;
-        Pinetime::Controllers::HeartRateController heartRateController;
-        std::unique_ptr<Pinetime::Applications::HeartRateTask> heartRateApp;
         Pinetime::Controllers::StepCountController stepCountController;
         std::unique_ptr<Pinetime::Applications::StepCountTask> stepCountApp;
+        Pinetime::Controllers::HeartRateController heartRateController;
+        std::unique_ptr<Pinetime::Applications::HeartRateTask> heartRateApp;
 
         Pinetime::Controllers::Ble& bleController;
         Pinetime::Controllers::DateTime& dateTimeController;
@@ -82,8 +82,8 @@ namespace Pinetime {
         Pinetime::Drivers::WatchdogView watchdogView;
         Pinetime::Controllers::NotificationManager notificationManager;
         Pinetime::Controllers::MotorController& motorController;
+        Pinetime::Drivers::Bma42x& stepCountSensor;
         Pinetime::Drivers::Hrs3300& heartRateSensor;
-        Pinetime::Drivers::Bma421& stepCountSensor;
         Pinetime::Controllers::NimbleController nimbleController;
 
         static constexpr uint8_t pinSpiSck = 2;
